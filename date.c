@@ -137,6 +137,7 @@ void printCalendar(int year)
     
     int days[12];
     int monthName[12];
+
     // Index of the day from 0 to 6
     int current = dayNumber(1, 1, year);
     printf("Current: %d\n\n", current);

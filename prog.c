@@ -46,7 +46,7 @@ void SHOW_DATE(int x){ // CHOICE comes in as x and runs through the switch case
     struct tm tm = *localtime(&t);
     switch (x){
         case FULL:  // with no argument we print FULL, both time, date and calendar
-            printf("         %d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+            printf(" %d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
             PRINT_CALENDAR(tm.tm_year + 1900, tm.tm_mon + 1);
             break;
         case TIME_ONLY: // with -t as argument we print time only
@@ -63,11 +63,14 @@ void SHOW_DATE(int x){ // CHOICE comes in as x and runs through the switch case
 
 void PRINT_CALENDAR(int y, int m) /* display calendar at m y */
 {
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+
     const char *NameOfMonth[] = { NULL/*dummp*/,
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     };
-    char Week[] = "Su Mo Tu We Th Fr Sa";
+    char Week[] = "Mo Tu We Th Fr Sa Su";
     int DayOfMonth[] =
         { -1/*dummy*/,31,28,31,30,31,30,31,31,30,31,30,31 };
     int weekOfTopDay;
@@ -78,10 +81,14 @@ void PRINT_CALENDAR(int y, int m) /* display calendar at m y */
         DayOfMonth[2] = 29;
     printf("\n     %s %d\n%s\n", NameOfMonth[m], y, Week);
 
-    for(i=0;i<weekOfTopDay;i++)
+    for(i=0;i<weekOfTopDay-1;i++)
         printf("   ");
-    for(i=weekOfTopDay,day=1;day <= DayOfMonth[m];i++,day++){
-        printf("%2d ",day);
+    for(i=weekOfTopDay-1,day=1;day <= DayOfMonth[m];i++,day++){
+        if(day == tm.tm_mday)
+            printf("[%d]", day);
+        else
+            printf("%2d ", day);
+
         if(i % 7 == 6)
             printf("\n");
     }   
