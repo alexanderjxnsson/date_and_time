@@ -14,10 +14,11 @@ void SHOW_DATE(int x);
 int DETERMINE_ARG(int arg_count, char *arg[]);
 
 /* Global functions for calender */
-void PRINT_CALENDAR(int year);
-int NUMBER_OF_DAYS(int monthNumber, int year);
-char* GET_MONTH_NAME(int monthNumber);
-int DAY_NUMBER(int day, int month, int year);
+void PRINT_CALENDAR(int year, int month);
+int IS_LEAP_YEAR(int y);
+int LEAP_YEARS(int y);
+int TODAY_OF(int y, int m, int d);
+long DAYS(int y, int m, int d);
 
 int main(int argc, char *argv[]){
 
@@ -46,7 +47,7 @@ void SHOW_DATE(int x){ // CHOICE comes in as x and runs through the switch case
     switch (x){
         case FULL:  // with no argument we print FULL, both time, date and calendar
             printf("         %d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-            PRINT_CALENDAR(tm.tm_year + 1900);
+            PRINT_CALENDAR(tm.tm_year + 1900, tm.tm_mon + 1);
             break;
         case TIME_ONLY: // with -t as argument we print time only
             printf("%02d:%02d:%02d\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
@@ -60,111 +61,57 @@ void SHOW_DATE(int x){ // CHOICE comes in as x and runs through the switch case
     }
 }
 
-// Function that returns the index of the day for date DD/MM/YYYY
-int DAY_NUMBER(int day, int month, int year)
+void PRINT_CALENDAR(int y, int m) /* display calendar at m y */
 {
-    static int t[] = { 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 };
-    year -= month < 3;
-    return (year + year / 4
-            - year / 100
-            + year / 400
-            + t[month - 1] + day-1) // day-1 so we get monday as starting day of the week insted of sunday
-           % 7;
-}
-  
-// Function that returns the name of the month for the given month Number
-// January - 0, February - 1 and so on
-char* GET_MONTH_NAME(int monthNumber)
-{
-    char* month;
-    switch (monthNumber) {
-    case 0:     month = "January";      break;
-    case 1:     month = "February";     break;
-    case 2:     month = "March";        break;
-    case 3:     month = "April";        break;
-    case 4:     month = "May";          break;
-    case 5:     month = "June";         break;
-    case 6:     month = "July";         break;
-    case 7:     month = "August";       break;
-    case 8:     month = "September";    break;
-    case 9:     month = "October";      break;
-    case 10:    month = "November";     break;
-    case 11:    month = "December";     break;
-    }
-    return month;
-}
+    const char *NameOfMonth[] = { NULL/*dummp*/,
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    };
+    char Week[] = "Su Mo Tu We Th Fr Sa";
+    int DayOfMonth[] =
+        { -1/*dummy*/,31,28,31,30,31,30,31,31,30,31,30,31 };
+    int weekOfTopDay;
+    int i,day;
 
-// Function to return the number of days in a month
-int NUMBER_OF_DAYS(int monthNumber, int year){
-    if (monthNumber == JANUARY || monthNumber == MARCH || monthNumber == MAY || monthNumber == JULY || monthNumber == AUGUST || monthNumber == OCTOBER || monthNumber == DECEMBER)
-    {
-        return 31;
-    }
-    else if (monthNumber == APRIL || monthNumber == JUNE || monthNumber == SEPTEMBER || monthNumber == NOVEMBER)
-    {
-        return 30;
-    }
-    if (monthNumber == FEBRUARY) {
-        // If the year is leap then Feb has 29 days
-        if (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))
-            return (29);
-        else
-            return (28);
-    }
-}
-  
-// Function to print the calendar of the given year
-void PRINT_CALENDAR(int year){
-    time_t t = time(NULL);
-    struct tm tm = *localtime(&t);
-    
-    // Index of the day from 0 to 6
-    int current = DAY_NUMBER(1, 1, year);
+    weekOfTopDay = DAYS(y, m, 1) % 7;
+    if(IS_LEAP_YEAR(y))
+        DayOfMonth[2] = 29;
+    printf("\n     %s %d\n%s\n", NameOfMonth[m], y, Week);
 
-    int days = NUMBER_OF_DAYS(tm.tm_mon, year);
-    // Print the current month name
-    printf("  %s\n", GET_MONTH_NAME(tm.tm_mon));
-
-    // Print the columns
-    printf("  Mon  Tue  Wed  Thu  Fri  Sat  Sun\n");
-
-    // j for Iterate through days
-    // Print appropriate spaces
-    int k;
-    for (k = 0; k < current; k++)
-        printf("     ");
-    int min = 0;
-
-    for (int j = 1; j <= days; j++) {
-        if (tm.tm_mday == j && tm.tm_mday <= 9){
-            printf("   [%d]", j);
-            min = 1;
-        }
-        else if (tm.tm_mday == j && tm.tm_mday > 9){
-            printf("  [%d]", j);
-            min = 1;
-        }
-        else if(min == 1){
-            printf("%4d", j);
-            min = 0;
-        }
-        else if(tm.tm_mday < 9){
-            printf("%5d", j);
-        }
-        else{
-            printf("%5d", j);
-        }
-
-        if (++k > 6) {
-            k = 0;
+    for(i=0;i<weekOfTopDay;i++)
+        printf("   ");
+    for(i=weekOfTopDay,day=1;day <= DayOfMonth[m];i++,day++){
+        printf("%2d ",day);
+        if(i % 7 == 6)
             printf("\n");
-        }
-    }
+    }   
+    printf("\n");
+}
 
-    if (k)
-        printf("\n");
+// Function to print the calendar of the given year
+int IS_LEAP_YEAR(int y) /* True if leap year */
+{
+    return(y % 400 == 0) || ((y % 4 == 0) && (y % 100 != 0));
+}
 
-    current = k;
-  
-    return;
+int LEAP_YEARS(int y) /* The number of leap year */
+{
+    return y/4 - y/100 + y/400;
+}
+
+int TODAY_OF(int y, int m, int d) /* The number of days since the beginning of the year */
+{
+    static int DayOfMonth[] = 
+        { -1/*dummy*/,0,31,59,90,120,151,181,212,243,273,304,334};
+
+    return DayOfMonth[m] + d + ((m>2 && IS_LEAP_YEAR(y))? 1 : 0);
+}
+
+long DAYS(int y, int m, int d) /* Total number of days */
+{
+    int lastYear;
+
+    lastYear = y - 1;
+
+    return 365L * lastYear + LEAP_YEARS(lastYear) + TODAY_OF(y,m,d);
 }

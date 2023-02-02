@@ -2,7 +2,7 @@
 // calendar for the given year
 #include <time.h>
 #include <stdio.h>
- 
+ enum MONTHS {JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC};
 // Function that returns the index of the
 // day for date DD/MM/YYYY
 int dayNumber(int day, int month, int year)
@@ -21,46 +21,46 @@ int dayNumber(int day, int month, int year)
 // Function that returns the name of the
 // month for the given month Number
 // January - 0, February - 1 and so on
-char* getMonthName(int monthNumber)
+int getMonthName(int monthNumber)
 {
-    char* month;
+    int month;
  
     switch (monthNumber) {
     case 0:
-        month = "January";
+        month = JAN;
         break;
     case 1:
-        month = "February";
+        month = FEB;
         break;
     case 2:
-        month = "March";
+        month = MAR;
         break;
     case 3:
-        month = "April";
+        month = APR;
         break;
     case 4:
-        month = "May";
+        month = MAY;
         break;
     case 5:
-        month = "June";
+        month = JUN;
         break;
     case 6:
-        month = "July";
+        month = JUL;
         break;
     case 7:
-        month = "August";
+        month = AUG;
         break;
     case 8:
-        month = "September";
+        month = SEP;
         break;
     case 9:
-        month = "October";
+        month = OCT;
         break;
     case 10:
-        month = "November";
+        month = NOV;
         break;
     case 11:
-        month = "December";
+        month = DEC;
         break;
     }
     return month;
@@ -125,6 +125,7 @@ int numberOfDays(int monthNumber, int year)
     // December
     if (monthNumber == 11)
         return (31);
+    return 0;
 }
  
 // Function to print the calendar of
@@ -136,9 +137,9 @@ void printCalendar(int year)
     
     int days[12];
     int monthName[12];
-    // Make getMonthName int to char ENUM
     // Index of the day from 0 to 6
     int current = dayNumber(1, 1, year);
+    printf("Current: %d\n\n", current);
     for (int i = 0; i < 12; i++){
         days[i] = numberOfDays(i, year);
         monthName[i] = getMonthName(i);
@@ -149,7 +150,7 @@ void printCalendar(int year)
     // j for Iterate through days
     // of the month - i
 
-        if (monthName[i] == tm.tm_mon ){
+        if (monthName[i] == tm.tm_mon+1 ){
             // Print the columns
             printf("  Sun  Mon  Tue  Wed  Thu  Fri  Sat\n");
 
