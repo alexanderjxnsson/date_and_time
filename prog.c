@@ -5,7 +5,7 @@
 
 // global variables
 //  FULL = no argument from user, DATE_ONLY = -d, TIME_ONLY -t
-enum args{FULL, DATE_ONLY, TIME_ONLY};
+enum args{FULL, DATE_ONLY, TIME_ONLY, HELP};
 enum months{JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER};
 int CHOICE = 0;
 
@@ -32,11 +32,13 @@ int DETERMINE_ARG(int arg_count, char *arg[]){
 
     if (arg_count > 1){ // If we have more than one argument we will enter the if statement
 
-        if (strcmp(arg[1], "-d") == 0) {return DATE_ONLY;} // -d = DATE_ONLY return 1
+        if (strcmp(arg[1], "d") == 0 || strcmp(arg[1], "date") == 0) {return DATE_ONLY;} // d or date = DATE_ONLY return 1
 
-        else if (strcmp(arg[1], "-t") == 0) {return TIME_ONLY;} // -t = TIME_ONLY return 2
+        else if (strcmp(arg[1], "t") == 0 || strcmp(arg[1], "time") == 0) {return TIME_ONLY;} // t or time = TIME_ONLY return 2
 
-        else {return 3;} // If an invalid argument/option is passed through we go to the default in the switch case in SHOW_DATE function
+        else if (strcmp(arg[1], "h") == 0 || strcmp(arg[1], "help") == 0) {return HELP;} // h or help = HELP return 3
+
+        else {return 4;} // If an invalid argument/option is passed through we go to the default in the switch case in SHOW_DATE function
     }
     else{return FULL;} // if no arguments were passed we return 0 for FULL
 }
@@ -46,17 +48,20 @@ void SHOW_DATE(int x){ // CHOICE comes in as x and runs through the switch case
     struct tm tm = *localtime(&t);
     switch (x){
         case FULL:  // with no argument we print FULL, both time, date and calendar
-            printf(" %d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+            printf("\n %d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
             PRINT_CALENDAR(tm.tm_year + 1900, tm.tm_mon + 1);
             break;
-        case TIME_ONLY: // with -t as argument we print time only
-            printf("%02d:%02d:%02d\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
+        case TIME_ONLY: // with t as argument we print time only
+            printf("\n%02d:%02d:%02d\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
             break;
-        case DATE_ONLY: // with -d as argument we print date only
-            printf("%d-%02d-%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
+        case DATE_ONLY: // with d as argument we print date only
+            printf("\n%d-%02d-%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
+            break;
+        case HELP: // with h or help as argument we print list of arguments to chose from
+            printf("date command help\n\tOptions:\n\td or date\tView date only\n\tt or time\tView time only\n\th or help\tView help\n");
             break;
         default: // and if an invalid argument is entered we print the correct arguments
-            printf("Enter correct option\n-t\ttime only\n-d\tdate only\n");
+            printf("Invalid argument. Use 'date h' or 'date help' for info.\n");
             break;
     }
 }
