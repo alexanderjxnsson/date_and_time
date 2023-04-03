@@ -22,15 +22,15 @@ long DAYS(int y, int m, int d);
 int main(int argc, char *argv[]){
 
     CHOICE = DETERMINE_ARG(argc, argv); // CHOICE get return value from DETERMINE_ARG function
-    SHOW_DATE(CHOICE);                  // CHOICE gets sent to SHOW_DATE function
+    SHOW_DATE(CHOICE);                  // CHOICE is passed to SHOW_DATE function
 
     return 0;
 }
 
 int DETERMINE_ARG(int arg_count, char *arg[]){
 
-    if (arg_count > 1){ // If we have more than one argument we will enter the if statement
-        if (strcmp(arg[1], "f") == 0 || strcmp(arg[1], "-full") == 0) {return FULL;} // f or full = FULL return 1
+    if (arg_count > 1){ // If we have an argument we will enter the if statement
+        if (strcmp(arg[1], "f") == 0 || strcmp(arg[1], "full") == 0) {return FULL;} // f or full = FULL return 1
 
         else if (strcmp(arg[1], "d") == 0 || strcmp(arg[1], "date") == 0) {return DATE_ONLY;} // d or date = DATE_ONLY return 2
 
@@ -38,7 +38,7 @@ int DETERMINE_ARG(int arg_count, char *arg[]){
 
         else if (strcmp(arg[1], "h") == 0 || strcmp(arg[1], "help") == 0) {return HELP;} // h or help = HELP return 4
 
-        else {return 4;} // If an invalid argument/option is passed through we go to the default in the switch case in SHOW_DATE function
+        else {return 4;} // If an invalid argument/option is passed through we go to the determingfault in the switch case in SHOW_DATE function
     }
     else{return STANDARD;} // if no arguments were passed we return 0 for STANDARD
 }
@@ -48,17 +48,17 @@ void SHOW_DATE(int x){ // CHOICE comes in as x and runs through the switch case
     struct tm tm = *localtime(&t);
     switch (x){
         case STANDARD:
-            printf("%d-%02d-%02d %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+            printf("%d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
             break;
         case FULL:  // with no argument we print FULL, both time, date and calendar
-            printf("%d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+            printf("%d-%02d-%02d %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
             PRINT_CALENDAR(tm.tm_year + 1900, tm.tm_mon + 1);
             break;
         case TIME_ONLY: // with t as argument we print time only
-            printf("%02d:%02d:%02d", tm.tm_hour, tm.tm_min, tm.tm_sec);
+            printf("%02d:%02d:%02d\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
             break;
         case DATE_ONLY: // with d as argument we print date only
-            printf("%d-%02d-%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
+            printf("%d-%02d-%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
             break;
         case HELP: // with h or help as argument we print list of arguments to chose from
             printf("date command help\n\tOptions:\n\tf or full\tView full time and calendar\n\td or date\tView date only\n\tt or time\tView time only\n\th or help\tView help\n");
