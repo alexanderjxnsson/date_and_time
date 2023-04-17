@@ -80,7 +80,6 @@ void PRINT_CALENDAR(int y, int m) /* display calendar at m y */
     for(i=weekOfTopDay-1,day=1;day <= DayOfMonth[m];i++,day++){
         if(day == tm.tm_mday)
             printf("[%d]", day);
-        else if()
         else
             printf("%2d ", day);
 
@@ -121,35 +120,36 @@ long DAYS(int y, int m, int d) /* Total number of days */
 void IS_SWE_HOLIDAY(){
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
+
     // constant dates
     if (tm.tm_mday == 1 && tm.tm_mon == JANUARY){ // new years day
-        printf("%s%d-%02d-%02d %02d:%02d:%02d%s\n", FG_RED, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, RESET);
+        printf("%s%02d-%02d-%d %02d:%02d:%02d%s\n", FG_RED, tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec, RESET);
         printf("%sNew years day\n%s", FG_RED, RESET);
     }
     else if (tm.tm_mday == 6 && tm.tm_mon == JANUARY){ // epiphany
-        printf("%s%d-%02d-%02d %02d:%02d:%02d%s\n", FG_RED, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, RESET);
+        printf("%s%02d-%02d-%d %02d:%02d:%02d%s\n", FG_RED, tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec, RESET);
         printf("%sEpiphany\n%s", FG_RED, RESET);
     }
     else if (tm.tm_mday == 1 && tm.tm_mon == MAY){ // first of may
-        printf("%s%d-%02d-%02d %02d:%02d:%02d%s\n", FG_RED, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, RESET);
+        printf("%s%02d-%02d-%d %02d:%02d:%02d%s\n", FG_RED, tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec, RESET);
         printf("%sFirst of may\n%s", FG_RED, RESET);
     }
     else if (tm.tm_mday == 6 && tm.tm_mon == JUNE){ // national day
-        printf("%s%d-%02d-%02d %02d:%02d:%02d%s\n", FG_RED, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, RESET);
+        printf("%s%02d-%02d-%d %02d:%02d:%02d%s\n", FG_RED, tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec, RESET);
         printf("%sSwedens national day\n%s", FG_RED, RESET);
     }
     else if (tm.tm_mday == 25 && tm.tm_mon == DECEMBER){ // christmas day
-        printf("%s%d-%02d-%02d %02d:%02d:%02d%s\n", FG_RED, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, RESET);
+        printf("%s%02d-%02d-%d %02d:%02d:%02d%s\n", FG_RED, tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec, RESET);
         printf("%sChristmas day\n%s", FG_RED, RESET);
     }
     else if (tm.tm_mday == 26 && tm.tm_mon == DECEMBER){ // boxing day
-        printf("%s%d-%02d-%02d %02d:%02d:%02d%s\n", FG_RED, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, RESET);
+        printf("%s%02d-%02d-%d %02d:%02d:%02d%s\n", FG_RED, tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec, RESET);
         printf("%sBoxing day\n%s", FG_RED, RESET);
     }
     else if(tm.tm_wday == SUNDAY)
-        printf("%s%d-%02d-%02d %02d:%02d:%02d%s\n", FG_RED, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, RESET);
+        printf("%s%02d-%02d-%0d %0d:%02d:%02d%s\n", FG_RED, tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec, RESET);
     // if no consistent holidays
     else
-        printf("%d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+        printf("%d-%02d-%02d %02d:%02d:%02d\n", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec);
 
 }
